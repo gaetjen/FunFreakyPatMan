@@ -18,3 +18,4 @@ cabal.sandbox.config
 apriori.zip
 fpm.pdf
 *.iml
+src/FooBar.hs
