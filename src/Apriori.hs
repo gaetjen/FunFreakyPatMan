@@ -30,8 +30,16 @@ incCount = addCount 1
 main path file minSupport = do
     dataSet <- importData path file
     let frequents = apriori dataSet minSupport
-    putStrLn (show frequents)
+    exportResult path file $ toString frequents
 
+toString :: HasseTree -> String
+toString ht = toString' ht []
+
+toString' :: HasseTree -> ItemSet -> String
+toString' [] _ = ""
+toString' ((HasseTreeNode itm n []):htT) prevSet = toString' ((HasseLeafNode itm n):htT) prevSet
+toString' ((HasseLeafNode itm n):htT) prevSet = (unwords (reverse (itm:prevSet))) ++ " " ++ (show n) ++ "\n"++ (toString' htT prevSet)
+toString' ((HasseTreeNode itm n child):htT) prevSet = (toString' child (itm:prevSet)) ++ (toString' htT prevSet)
 
 apriori :: [ItemSet] -> Int -> HasseTree
 apriori dataSet minSupport = apriori' dataSet (singletons dataSet minSupport) minSupport 1

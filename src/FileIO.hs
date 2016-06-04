@@ -6,5 +6,5 @@ importData path file = do
     fileString <- readFile (path ++ "/" ++ file)
     return (map words $ lines fileString)
 
-
--- TODO: implement function to write out found frequent sets
+exportResult :: String -> String -> String -> IO ()
+exportResult path file res = do writeFile (path ++ "/res_" ++ file) res

@@ -19,3 +19,4 @@ apriori.zip
 fpm.pdf
 *.iml
 src/FooBar.hs
+*res_*
