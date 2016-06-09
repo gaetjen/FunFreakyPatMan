@@ -27,13 +27,13 @@ addCount a (HasseLeafNode itm n) = HasseLeafNode itm (n + a)
 incCount = addCount 1
 
 toString :: HasseTree -> String
-toString ht = toString' ht []
+toString ht = toString' ht ""
 
-toString' :: HasseTree -> ItemSet -> String
+toString' :: HasseTree -> String -> String
 toString' [] _ = ""
-toString' ((HasseTreeNode itm n []):htT) prevSet = toString' ((HasseLeafNode itm n):htT) prevSet
-toString' ((HasseLeafNode itm n):htT) prevSet = (unwords (reverse (itm:prevSet))) ++ " " ++ (show n) ++ "\n"++ (toString' htT prevSet)
-toString' ((HasseTreeNode itm n child):htT) prevSet = (toString' child (itm:prevSet)) ++ (toString' htT prevSet)
+toString' ((HasseTreeNode itm n []):htT) prefix = toString' ((HasseLeafNode itm n):htT) prefix
+toString' ((HasseLeafNode itm n):htT) prefix = prefix ++ itm ++ " " ++ (show n) ++ "\n"++ (toString' htT prefix)
+toString' ((HasseTreeNode itm n child):htT) prefix = (toString' child (prefix ++ " " ++ itm ++ " ")) ++ (toString' htT prefix)
 
 -- removes the infrequent item sets from the Hasse Tree
 removeInfrequent :: Int -> HasseTree -> Int -> HasseTree

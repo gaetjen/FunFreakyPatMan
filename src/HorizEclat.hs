@@ -11,7 +11,7 @@ main path file minSupport = do
 
 condDS :: [ItemSet] -> Item -> ([ItemSet], [ItemSet])
 condDS [] _ = ([], [])
-condDS (([]):dsT) condition = condDS dsT condition
+condDS ([]:dsT) condition = condDS dsT condition     -- condition occurs when ??? (i'm not sure but it doesn't work without)
 condDS (dsH@(dsHH:dsHT):dsT) condition
     | dsHH == condition = ((dsHT:containCondRemoved), (dsHT:allCondRemoved))
     | dsHH /= condition = (containCondRemoved, (dsH:allCondRemoved)) where
@@ -20,7 +20,8 @@ condDS (dsH@(dsHH:dsHT):dsT) condition
         allCondRemoved = snd tailResult
 
 horizEclat :: [ItemSet] -> Int -> HasseTree
-horizEclat ds minSupport = horizEclat' ds minSupport $ resetLeafCounts $ singletons ds minSupport
+horizEclat ds minSupport = horizEclat' ds minSupport $ resetLeafCounts $ singletons ds 0
+
 
 horizEclat' :: [ItemSet] -> Int -> HasseTree -> HasseTree
 horizEclat' _ _ [] = []
