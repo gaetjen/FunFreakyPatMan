@@ -26,6 +26,11 @@ addCount a (HasseLeafNode itm n) = HasseLeafNode itm (n + a)
 
 incCount = addCount 1
 
+maxDepth :: HasseTree -> Int
+maxDepth [] = 1
+maxDepth ((HasseLeafNode _ _):htT) = maxDepth htT
+maxDepth ((HasseTreeNode _ _ c):htT) = max (1 + maxDepth c) (maxDepth htT)
+
 toString :: HasseTree -> String
 toString ht = toString' ht ""
 

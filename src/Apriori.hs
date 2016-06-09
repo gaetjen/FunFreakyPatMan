@@ -7,17 +7,16 @@ main path file minSupport = do
     dataSet <- importData path file
     let frequents = apriori dataSet minSupport
     exportResult path file $ toString frequents
+--     return $ frequents
 
 apriori :: [ItemSet] -> Int -> HasseTree
 apriori dataSet minSupport = apriori' dataSet (singletons dataSet minSupport) minSupport 1
 
 apriori' :: [ItemSet] -> HasseTree -> Int -> Int -> HasseTree
--- apriori' _ [] _ _ = []
-apriori' dataSet hasseTree minSupport k
-    | k > (length hasseTree) = hasseTree
-    | otherwise = apriori' dataSet postPruned minSupport (k + 1) where -- k = level of iteration
+apriori' dataSet hasseTree minSupport k          -- k = level of iteration
+    | k > (maxDepth hasseTree) = hasseTree
+    | otherwise = apriori' dataSet postPruned minSupport (k + 1) where
         postPruned = (posteriorPrune dataSet aprioriPruned minSupport (k + 1))
---         postPruned = aprioriPruned
         aprioriPruned = (genCandidates hasseTree hasseTree k [])
 
 -- generates viable (i.e. according to a priori property) candidates
@@ -75,10 +74,10 @@ addItemSet _ [] _ = []
 addItemSet is@(isH:isT) ht@(htH:htT) 1
     | isH == item htH = (incCount htH):(addItemSet isT htT 1)
     | isH > item htH = htH:(addItemSet is htT 1)
-    | isH < item htH = ht
+    | isH < item htH = addItemSet isT ht 1
 addItemSet is (htH@(HasseLeafNode _ _):htT) k = htH:(addItemSet is htT k)
 addItemSet is@(isH:isT) ht@(htH@(HasseTreeNode itm n child):htT) k
     | isH == item htH = (HasseTreeNode itm n (addItemSet isT child (k - 1))):(addItemSet isT htT k)
     | isH > item htH = htH:(addItemSet is htT k)
-    | isH < item htH = ht
+    | isH < item htH = addItemSet isT ht k
 
